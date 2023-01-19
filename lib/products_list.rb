@@ -70,23 +70,21 @@ class ProductsList
   end
 
   def round_number(number)
-    total_tax = number.round(2)
-    last_number = total_tax.to_s.split('')[-1].to_i
-
-    if (3..7) === last_number
-      str_tax = total_tax.to_s
-      total_tax = (str_tax[0..str_tax.length - 2] + '5').to_f
-    else
-      str_tax = total_tax.round(1).to_s
-      total_tax = (str_tax.to_s + '0').to_f
-    end
-
-    total_tax
+    (number * 20).round / 20.0
   end
 
   def not_taxable(name)
     FOOD.any?{ |food| name =~ /#{food}/ } ||
       MEDICINE.any?{ |food| name =~ /#{food}/ } ||
       EDUCATION.any?{ |food| name =~ /#{food}/ }
+  end
+
+  def to_s
+    output = String.new
+    self.list.each do |key, val|
+      output << "#{val[:quantity]} #{key}: #{val[:price]}\n"
+    end
+    output << "Sales Taxes: #{"%.2f" % self.tax}\n"
+    output << "Total: #{"%.2f" % self.total}\n"
   end
 end
